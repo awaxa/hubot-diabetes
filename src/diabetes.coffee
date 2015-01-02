@@ -31,11 +31,12 @@ mgdlToIfcc = (n) ->
 module.exports = (robot) ->
   range = ///
     ^              # anchor to the beginning of the string
+    ([^_]+_)?      # optional inline underscore
     (              # begin a capture group
     \d{1,3}        # one to three digit numbers
     (\.\d)?        # optional tenths place
     )              # end a capture group
-    $              # anchor to the end of the string
+    # $              # anchor to the end of the string
     ///
 
   options =
@@ -61,7 +62,7 @@ module.exports = (robot) ->
     msg.send reply
 
   robot.hear range, (msg) ->
-    bg = msg.match[1]
+    bg = msg.match[2]
     return unless bg > 0
     if bg >= options.threshold
       msg.send bg + ' mg/dL is ' + mgdlToMmol(bg).toFixed(1) + ' mmol/L'
